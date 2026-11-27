@@ -135,6 +135,7 @@ describe('TopicPage', () => {
   const detail: TopicDetail = {
     ...topic(100, 'Relationships'),
     resources_count: 0,
+    notes_count: 0,
     breadcrumb: { learning_path: { id: 1, title: 'My Laravel' }, module: { id: 10, title: 'Eloquent' }, parent: null },
     is_system: false,
     can_edit: true,

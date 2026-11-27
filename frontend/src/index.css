@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 /* Class-based dark mode: <html class="dark"> (set by the theme store). */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -6,5 +7,47 @@
 @layer base {
   html {
     @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+}
+
+/* Syntax colours for rehype-highlight (highlight.js classes). Code blocks are dark in both themes. */
+@layer components {
+  .markdown pre code.hljs {
+    @apply text-slate-100;
+  }
+  .markdown .hljs-comment,
+  .markdown .hljs-quote {
+    @apply text-slate-400 italic;
+  }
+  .markdown .hljs-keyword,
+  .markdown .hljs-selector-tag,
+  .markdown .hljs-built_in,
+  .markdown .hljs-type {
+    @apply text-violet-300;
+  }
+  .markdown .hljs-string,
+  .markdown .hljs-regexp,
+  .markdown .hljs-addition {
+    @apply text-emerald-300;
+  }
+  .markdown .hljs-number,
+  .markdown .hljs-literal,
+  .markdown .hljs-symbol {
+    @apply text-amber-300;
+  }
+  .markdown .hljs-title,
+  .markdown .hljs-section,
+  .markdown .hljs-function {
+    @apply text-sky-300;
+  }
+  .markdown .hljs-variable,
+  .markdown .hljs-attr,
+  .markdown .hljs-attribute,
+  .markdown .hljs-template-variable,
+  .markdown .hljs-deletion {
+    @apply text-rose-300;
+  }
+  .markdown .hljs-meta {
+    @apply text-slate-400;
   }
 }

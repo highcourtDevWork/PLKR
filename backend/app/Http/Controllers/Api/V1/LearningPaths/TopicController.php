@@ -24,7 +24,7 @@ class TopicController extends Controller
         return new TopicResource($this->content->createTopic($module, $request->validated()));
     }
 
-    /** Topic page: breadcrumb, the user's progress, subtopics (with progress) and own resource count. */
+    /** Topic page: breadcrumb, the user's progress, subtopics (with progress) and own resource and note counts. */
     public function show(Request $request, Topic $topic): TopicResource
     {
         Gate::authorize('view', $topic);
@@ -37,7 +37,7 @@ class TopicController extends Controller
             'parent',
             'progress' => $forUser,
             'children.progress' => $forUser,
-        ])->loadCount(['resources' => $forUser]);
+        ])->loadCount(['resources' => $forUser, 'notes' => $forUser]);
 
         return new TopicResource($topic);
     }

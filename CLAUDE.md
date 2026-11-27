@@ -5,7 +5,7 @@ The full product spec is in [docs/requirements.md](docs/requirements.md). Read t
 
 ## Current status
 
-**Design approved 2026-11-27. Phase 1 (Learning paths) complete on branch `phase-1-learning-paths`, awaiting review. Next: Phase 2 (Knowledge base + tags).** Decisions are in [docs/prd.md](docs/prd.md). Phases are in [docs/roadmap.md](docs/roadmap.md).
+**Design approved 2026-11-27. Phase 1 (Learning paths) pushed on `phase-1-learning-paths`. Phase 2 (Knowledge base: notes, tags, search) complete on `phase-2-knowledge-base` (branched from phase 1), awaiting review. Next: Phase 3 (Question bank).** Decisions are in [docs/prd.md](docs/prd.md). Phases are in [docs/roadmap.md](docs/roadmap.md).
 Build one phase at a time, and get the user's approval before starting the next one.
 
 ## Resolved spec conflicts
@@ -105,7 +105,7 @@ For each phase: state the objective → list the affected modules and tables →
 | Where | Command | What |
 |---|---|---|
 | `backend/` | `composer run dev` | API on :8000 + queue listener |
-| `backend/` | `php artisan test` | Pest suite (MySQL database `learnos_test`, must exist) |
+| `backend/` | `php artisan test` | Pest suite (MySQL database `learnos_test`, must exist). Tests that hit FULLTEXT go in `tests/FullText` (committed rows, `DatabaseTruncation`) |
 | `backend/` | `vendor/bin/pint` · `vendor/bin/phpstan analyse --memory-limit=1G` | Format · static analysis (Larastan level 6) |
 | `backend/` | `php artisan migrate` | Database `learnos` |
 | `frontend/` | `npm run dev` | SPA on :5173, proxies `/api` and `/sanctum` to :8000. Open **http://localhost:5173** (not 127.0.0.1, or the cookies break) |

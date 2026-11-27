@@ -27,25 +27,25 @@ All paths are relative to `/api/v1`. Conventions are in [README.md](README.md). 
 | PATCH / DELETE | `/modules/{module}` | |
 | POST | `/modules/{module}/topics` | `parent_id` optional (depth ≤ 2) |
 | POST | `/modules/{module}/topics/reorder` | `{ ids }` of one sibling group |
-| GET / PATCH / DELETE | `/topics/{topic}` | GET includes breadcrumb, progress, subtopics, own `resources_count`. Note/card/question counts arrive with those modules |
+| GET / PATCH / DELETE | `/topics/{topic}` | GET includes breadcrumb, progress, subtopics, own `resources_count` and `notes_count`. Card and question counts arrive with those modules |
 | PUT | `/topics/{topic}/progress` | `{ status }` (manual completion; mastery is computed) |
 | GET / POST | `/topics/{topic}/resources` | Own resources only |
 | PATCH / DELETE | `/resources/{resource}` | |
 
-## Tags & search (Ph 2)
+## Tags & search (Ph 2, built; exact contract in [notes.md](notes.md))
 | Method | Path | Notes |
 |---|---|---|
-| GET / POST | `/tags` | |
+| GET / POST | `/tags` | GET returns all own tags with `notes_count` |
 | PATCH / DELETE | `/tags/{tag}` | |
-| GET | `/search?q=` | Notes, questions and topics; grouped top results (FULLTEXT) |
+| GET | `/search?q=` | Notes (FULLTEXT) and topics (title) now; questions join in Ph 3. Top 5 per group |
 
-## Notes (Ph 2)
+## Notes (Ph 2, built; exact contract in [notes.md](notes.md))
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/notes` | `filter[topic_id]`, `filter[kind]`, `filter[tag]`, `filter[q]`, `filter[pinned]`; `sort=-updated_at,title` |
+| GET | `/notes` | `filter[topic_id]`, `filter[kind]`, `filter[tag_id]`, `filter[q]`, `filter[pinned]`; `sort=-updated_at\|created_at\|title`; pinned first; `excerpt` instead of `body` |
 | POST | `/notes` | `tag_ids[]` |
 | GET / PATCH / DELETE | `/notes/{note}` | |
-| POST | `/notes/{note}/flashcards` | Create cards from a note (manual list in body) |
+| POST | `/notes/{note}/flashcards` | **Ph 4.** Create cards from a note (manual list in body) |
 
 ## Questions (Ph 3; AI review Ph 7)
 | Method | Path | Notes |

@@ -30,6 +30,8 @@ export interface TopicDetail extends Topic {
   progress: TopicProgress
   subtopics: Topic[]
   resources_count: number
+  /** The user's own notes on this topic. */
+  notes_count: number
   breadcrumb: {
     learning_path: { id: number; title: string }
     module: { id: number; title: string }

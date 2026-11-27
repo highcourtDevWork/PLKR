@@ -299,7 +299,9 @@ Model class: `LearningResource` (`Resource` clashes with the PHP pseudo-type in 
 
 ### tags / taggables
 `tags`: `user_id` FK (C), `name` VARCHAR(50), `slug` VARCHAR(60), with **UNIQUE `(user_id, slug)`**.
-`taggables`: `tag_id` FK (C), `taggable_type` VARCHAR(64), `taggable_id` BIGINT. PK `(tag_id, taggable_type, taggable_id)`; index `(taggable_type, taggable_id)`. No timestamps. These polymorphic rows have no FK on the target, so they're cleaned up in model `forceDeleted` events.
+`taggables`: `tag_id` FK (C), `taggable_type` VARCHAR(64), `taggable_id` BIGINT. PK `(tag_id, taggable_type, taggable_id)`; index `(taggable_type, taggable_id)`. No timestamps. These polymorphic rows have no FK on the target, so they're cleaned up in model `forceDeleted` events (the `HasTags` trait).
+`taggable_type` holds a morph alias (`note`, later `question`), not a class name: `Relation::enforceMorphMap` in `AppServiceProvider`.
+Tags are owned by a user; deleting a tag or a user cascades through `tag_id`. Tags have no soft deletes.
 
 ### notes (SD)
 | Column | Type | Notes |
@@ -311,7 +313,8 @@ Model class: `LearningResource` (`Resource` clashes with the PHP pseudo-type in 
 | body | MEDIUMTEXT | Markdown source of truth |
 | is_pinned | BOOL | |
 | source | VARCHAR(16) | manual / ai |
-Indexes: `(user_id, topic_id)`, `(user_id, updated_at)`, **FULLTEXT `(title, body)`**.
+Indexes: `(user_id, topic_id)`, `(user_id, is_pinned, updated_at)` (the list order: pinned first, then newest), **FULLTEXT `(title, body)`**.
+Notes are always private, also on system topics. Deleting a topic (soft) leaves `topic_id` in place and the API shows `topic: null`; a hard delete sets it to NULL.
 
 ### questions (SD)
 | Column | Type | Notes |

@@ -1,5 +1,8 @@
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLogout, useMe } from '@/features/auth/hooks/useAuth'
+import { SearchDialog } from '@/features/search/components/SearchDialog'
+import { useSearchShortcut } from '@/features/search/hooks/useSearchShortcut'
 import { useUiStore } from '@/stores/ui'
 import { Button } from '../ui/Button'
 import { ThemeToggle } from './ThemeToggle'
@@ -9,6 +12,8 @@ export function Topbar() {
   const { data: user } = useMe()
   const logout = useLogout()
   const navigate = useNavigate()
+  const [searching, setSearching] = useState(false)
+  useSearchShortcut(useCallback(() => setSearching(true), []))
 
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-slate-200 bg-white/80 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80 sm:px-6">
@@ -20,12 +25,23 @@ export function Topbar() {
       >
         ☰
       </button>
-      <div className="flex-1" />
+      <div className="flex-1">
+        <button
+          type="button"
+          onClick={() => setSearching(true)}
+          className="flex w-full max-w-sm items-center gap-2 rounded-md px-3 py-1.5 text-sm text-slate-500 ring-1 ring-slate-300 hover:bg-slate-50 dark:text-slate-400 dark:ring-slate-700 dark:hover:bg-slate-800"
+        >
+          <span aria-hidden="true">⌕</span>
+          Search
+          <kbd className="ml-auto hidden rounded bg-slate-100 px-1.5 font-sans text-xs text-slate-500 sm:inline dark:bg-slate-800">Ctrl K</kbd>
+        </button>
+      </div>
       <ThemeToggle />
       {user && <span className="hidden text-sm text-slate-600 dark:text-slate-300 sm:inline">{user.name}</span>}
       <Button variant="ghost" loading={logout.isPending} onClick={() => logout.mutate(undefined, { onSettled: () => navigate('/login') })}>
         Log out
       </Button>
+      {searching && <SearchDialog onClose={() => setSearching(false)} />}
     </header>
   )
 }

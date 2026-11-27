@@ -31,7 +31,8 @@ function useStructureMutation<TArgs, TResult>(mutationFn: (args: TArgs) => Promi
 // Queries
 export const usePaths = () => useQuery({ queryKey: learningKeys.pathList(), queryFn: api.listPaths })
 
-export const usePath = (id: number) => useQuery({ queryKey: learningKeys.path(id), queryFn: () => api.getPath(id) })
+export const usePath = (id: number, enabled = true) =>
+  useQuery({ queryKey: learningKeys.path(id), queryFn: () => api.getPath(id), enabled })
 
 export const useTopic = (id: number) => useQuery({ queryKey: learningKeys.topic(id), queryFn: () => api.getTopic(id) })
 

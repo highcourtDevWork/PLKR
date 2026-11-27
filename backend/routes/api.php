@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\V1\LearningPaths\TopicController;
 use App\Http\Controllers\Api\V1\LearningPaths\TopicProgressController;
 use App\Http\Controllers\Api\V1\Me\MeController;
 use App\Http\Controllers\Api\V1\Me\SettingsController;
+use App\Http\Controllers\Api\V1\Notes\NoteController;
+use App\Http\Controllers\Api\V1\Notes\TagController;
+use App\Http\Controllers\Api\V1\SearchController;
 use Illuminate\Support\Facades\Route;
 
 // Auth endpoints (login, logout, register, password reset/update, profile) are registered by Fortify under /api/v1/auth.
@@ -39,4 +42,11 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('topics/{topic}/resources', [ResourceController::class, 'store']);
     Route::patch('resources/{resource}', [ResourceController::class, 'update']);
     Route::delete('resources/{resource}', [ResourceController::class, 'destroy']);
+
+    // Knowledge base (docs/api/notes.md)
+    Route::apiResource('notes', NoteController::class)->except('update');
+    Route::patch('notes/{note}', [NoteController::class, 'update']);
+    Route::apiResource('tags', TagController::class)->except(['show', 'update']);
+    Route::patch('tags/{tag}', [TagController::class, 'update']);
+    Route::get('search', SearchController::class);
 });

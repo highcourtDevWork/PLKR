@@ -58,6 +58,16 @@ class Topic extends Model
     }
 
     /**
+     * Notes filed under this topic. Notes are private: always constrain to one user.
+     *
+     * @return HasMany<Note, $this>
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    /**
      * Progress row. Always constrain it to one user when loading.
      *
      * @return HasOne<UserTopicProgress, $this>

@@ -36,6 +36,7 @@ class TopicResource extends JsonResource
             'progress' => $this->when($this->relationLoaded('progress'), fn () => self::progress($this->progress)),
             'subtopics' => self::collection($this->whenLoaded('children')),
             'resources_count' => $this->whenCounted('resources'),
+            'notes_count' => $this->whenCounted('notes'),
             'breadcrumb' => $this->when($pathLoaded, fn () => [
                 'learning_path' => ['id' => $this->module->learningPath->id, 'title' => $this->module->learningPath->title],
                 'module' => ['id' => $this->module->id, 'title' => $this->module->title],

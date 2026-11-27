@@ -12,7 +12,7 @@ const main: NavItem[] = [
   { label: 'Dashboard', to: '/', icon: '▣' },
   { label: 'Review', icon: '◷' },
   { label: 'Learning paths', to: '/paths', icon: '▤', match: ['/paths', '/topics'] },
-  { label: 'Notes', icon: '✎' },
+  { label: 'Notes', to: '/notes', icon: '✎', match: ['/notes'] },
   { label: 'Questions', icon: '?' },
   { label: 'Quizzes', icon: '✓' },
   { label: 'Interviews', icon: '☺' },

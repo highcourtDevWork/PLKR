@@ -46,6 +46,18 @@ class User extends Authenticatable
         return $this->hasMany(LearningResource::class);
     }
 
+    /** @return HasMany<Note, $this> */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    /** @return HasMany<Tag, $this> */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
     /**
      * @return array<string, string>
      */

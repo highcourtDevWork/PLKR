@@ -16,6 +16,7 @@
 | **Static** | Larastan (level 6 at first, raised over time), Pint | Run in CI and before a phase is closed |
 
 - **Database:** MySQL `learnos_test` (not SQLite, because FULLTEXT, CHECK constraints and JSON behaviour must match production) with `RefreshDatabase`.
+- **Full-text tests** live in `tests/FullText` and use `DatabaseTruncation` instead: InnoDB FULLTEXT indexes don't see uncommitted rows, so a search inside the `RefreshDatabase` transaction finds nothing. Put every test that runs `MATCH … AGAINST` (search, `filter[q]`) there.
 - **Fakes:** `Queue::fake()` where dispatch is asserted, `Http::preventStrayRequests()`, and `FakeLlmClient` bound in `TestCase` with scripted responses.
 - **Factories** exist for every model, with states (`system()`, `pendingReview()`, `due()`, `expired()`).
 

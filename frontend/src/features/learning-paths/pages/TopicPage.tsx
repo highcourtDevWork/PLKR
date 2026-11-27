@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDialog } from '@/components/ui/Modal'
 import { EmptyState, ErrorState } from '@/components/ui/states'
+import { NoteList } from '@/features/notes/components/NoteList'
+import { useNotes } from '@/features/notes/hooks/useNotes'
 import { LevelBadge, StatusDot } from '../components/badges'
 import { ResourceFormModal, TopicFormModal } from '../components/forms'
 import { IconButton } from '../components/IconButton'
@@ -12,8 +14,8 @@ import { RESOURCE_TYPES, STATUSES, type LearningResource, type TopicDetail } fro
 
 const TABS = [
   { key: 'overview', label: 'Overview' },
+  { key: 'notes', label: 'Notes' },
   { key: 'resources', label: 'Resources' },
-  { key: 'notes', label: 'Notes', soon: true },
   { key: 'flashcards', label: 'Flashcards', soon: true },
   { key: 'questions', label: 'Questions', soon: true },
 ] as const
@@ -88,6 +90,42 @@ function Overview({ topic, onEdit }: { topic: TopicDetail; onEdit: () => void })
   )
 }
 
+/** The user's own notes on this topic (newest first, one page). */
+function Notes({ topicId }: { topicId: number }) {
+  const navigate = useNavigate()
+  const { data, isPending, isError, error, refetch } = useNotes({ topic_id: topicId })
+  const newNote = () => navigate(`/notes/new?topic_id=${topicId}`)
+
+  if (isPending) return <div className="h-24 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-800" aria-busy="true" />
+  if (isError) return <ErrorState message={error.message} onRetry={() => void refetch()} />
+
+  if (data.data.length === 0) {
+    return (
+      <EmptyState
+        title="No notes on this topic yet"
+        description="Explain it in your own words, save examples and the mistakes you made. Only you can see your notes."
+        action={<Button onClick={newNote}>Write a note</Button>}
+      />
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <NoteList notes={data.data} showTopic={false} />
+      <div className="flex flex-wrap items-center gap-4">
+        <Button variant="secondary" onClick={newNote}>
+          + New note
+        </Button>
+        {data.meta.total > data.data.length && (
+          <span className="text-sm text-slate-500">
+            Showing the {data.data.length} most recent of {data.meta.total} notes.
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function Resources({ topicId }: { topicId: number }) {
   const { data: resources, isPending, isError, error, refetch } = useResources(topicId)
   const remove = useDeleteResource()
@@ -152,7 +190,8 @@ export default function TopicPage() {
   const topicId = Number(useParams().topicId)
   const { data: topic, isPending, isError, error, refetch } = useTopic(topicId)
   const [params, setParams] = useSearchParams()
-  const tab = params.get('tab') === 'resources' ? 'resources' : 'overview'
+  const tabParam = params.get('tab')
+  const tab = tabParam === 'resources' || tabParam === 'notes' ? tabParam : 'overview'
   const [editing, setEditing] = useState(false)
 
   if (isPending) {
@@ -221,13 +260,22 @@ export default function TopicPage() {
               >
                 {t.label}
                 {t.key === 'resources' && topic.resources_count > 0 && <span className="ml-1.5 text-xs text-slate-400">{topic.resources_count}</span>}
+                {t.key === 'notes' && topic.notes_count > 0 && <span className="ml-1.5 text-xs text-slate-400">{topic.notes_count}</span>}
               </button>
             )
           })}
         </div>
       </div>
 
-      <div role="tabpanel">{tab === 'resources' ? <Resources topicId={topic.id} /> : <Overview topic={topic} onEdit={() => setEditing(true)} />}</div>
+      <div role="tabpanel">
+        {tab === 'resources' ? (
+          <Resources topicId={topic.id} />
+        ) : tab === 'notes' ? (
+          <Notes topicId={topic.id} />
+        ) : (
+          <Overview topic={topic} onEdit={() => setEditing(true)} />
+        )}
+      </div>
 
       {editing && <TopicFormModal moduleId={topic.module_id} topic={topic} onClose={() => setEditing(false)} />}
     </div>
