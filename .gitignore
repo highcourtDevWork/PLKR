@@ -1,0 +1,2 @@
+# backend/ and frontend/ have their own .gitignore files.
+.claude/settings.local.json
