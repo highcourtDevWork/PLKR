@@ -5,7 +5,7 @@ The full product spec is in [docs/requirements.md](docs/requirements.md). Read t
 
 ## Current status
 
-**Design approved 2026-11-27. Phase 0 (Foundation) complete, awaiting approval to start Phase 1 (Learning paths).** Decisions are in [docs/prd.md](docs/prd.md). Phases are in [docs/roadmap.md](docs/roadmap.md).
+**Design approved 2026-11-27. Phase 1 (Learning paths) complete on branch `phase-1-learning-paths`, awaiting review. Next: Phase 2 (Knowledge base + tags).** Decisions are in [docs/prd.md](docs/prd.md). Phases are in [docs/roadmap.md](docs/roadmap.md).
 Build one phase at a time, and get the user's approval before starting the next one.
 
 ## Resolved spec conflicts

@@ -35,6 +35,9 @@ export const routes: RouteObject[] = [
             element: <AppLayout />,
             children: [
               { path: '/', lazy: page(() => import('@/features/dashboard/pages/DashboardPage')) },
+              { path: '/paths', lazy: page(() => import('@/features/learning-paths/pages/PathsPage')) },
+              { path: '/paths/:pathId', lazy: page(() => import('@/features/learning-paths/pages/PathPage')) },
+              { path: '/topics/:topicId', lazy: page(() => import('@/features/learning-paths/pages/TopicPage')) },
               { path: '/settings', lazy: page(() => import('@/features/settings/pages/SettingsPage')) },
               { path: '*', lazy: page(() => import('./NotFoundPage')) },
             ],

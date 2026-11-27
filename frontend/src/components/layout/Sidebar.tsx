@@ -1,16 +1,17 @@
-import { NavLink } from 'react-router'
+import { NavLink, useLocation } from 'react-router'
 import { useUiStore } from '@/stores/ui'
 
 interface NavItem {
   label: string
   to?: string // undefined = module not built yet
   icon: string
+  match?: string[] // path prefixes that also mark this item active
 }
 
 const main: NavItem[] = [
   { label: 'Dashboard', to: '/', icon: '▣' },
   { label: 'Review', icon: '◷' },
-  { label: 'Learning paths', icon: '▤' },
+  { label: 'Learning paths', to: '/paths', icon: '▤', match: ['/paths', '/topics'] },
   { label: 'Notes', icon: '✎' },
   { label: 'Questions', icon: '?' },
   { label: 'Quizzes', icon: '✓' },
@@ -28,6 +29,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
   }`
 
 function Item({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+  const { pathname } = useLocation()
   const icon = <span className="w-5 text-center" aria-hidden="true">{item.icon}</span>
   if (!item.to) {
     return (
@@ -39,7 +41,12 @@ function Item({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
     )
   }
   return (
-    <NavLink to={item.to} end className={linkClass} onClick={onNavigate}>
+    <NavLink
+      to={item.to}
+      end
+      className={({ isActive }) => linkClass({ isActive: isActive || !!item.match?.some((prefix) => pathname.startsWith(prefix)) })}
+      onClick={onNavigate}
+    >
       {icon}
       {item.label}
     </NavLink>

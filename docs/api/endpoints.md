@@ -14,23 +14,25 @@ All paths are relative to `/api/v1`. Conventions are in [README.md](README.md). 
 | PUT | `/auth/user/password` | Change password (Fortify) |
 | DELETE | `/me` | Delete account (password confirm) |
 
-## Learning paths (Ph 1)
+## Learning paths (Ph 1, built; exact contract in [learning-paths.md](learning-paths.md))
 | Method | Path | Notes |
 |---|---|---|
-| GET | `/learning-paths` | Own + system. `filter[is_system]`, `sort=position,title,-updated_at`. Includes `modules_count`, `mastery` (avg) |
+| GET | `/learning-paths` | Own + system. `filter[title]`, `filter[is_system]`, `sort`. Includes `modules_count`, `topics_count`, `completed_topics_count` |
 | POST | `/learning-paths` | |
-| GET | `/learning-paths/{path}` | `?include=tree` returns modules → topics → subtopics with the user's progress (one call for the sidebar tree) |
+| POST | `/learning-paths/reorder` | `{ ids }` of all own paths |
+| GET | `/learning-paths/{path}` | Always returns the modules → topics → subtopics tree with the user's progress |
 | PATCH / DELETE | `/learning-paths/{path}` | DELETE soft-deletes children |
 | POST | `/learning-paths/{path}/modules` | |
+| POST | `/learning-paths/{path}/modules/reorder` | `{ ids }` |
 | PATCH / DELETE | `/modules/{module}` | |
-| POST | `/modules/reorder` | `{ ids: [] }`, also used for topics: `/topics/reorder` |
 | POST | `/modules/{module}/topics` | `parent_id` optional (depth ≤ 2) |
-| GET / PATCH / DELETE | `/topics/{topic}` | GET includes progress, counts (notes, cards, questions), resources |
+| POST | `/modules/{module}/topics/reorder` | `{ ids }` of one sibling group |
+| GET / PATCH / DELETE | `/topics/{topic}` | GET includes breadcrumb, progress, subtopics, own `resources_count`. Note/card/question counts arrive with those modules |
 | PUT | `/topics/{topic}/progress` | `{ status }` (manual completion; mastery is computed) |
-| GET / POST | `/topics/{topic}/resources` | |
+| GET / POST | `/topics/{topic}/resources` | Own resources only |
 | PATCH / DELETE | `/resources/{resource}` | |
 
-## Tags & search (Ph 1–2)
+## Tags & search (Ph 2)
 | Method | Path | Notes |
 |---|---|---|
 | GET / POST | `/tags` | |

@@ -1,4 +1,11 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type Ref, type SelectHTMLAttributes } from 'react'
+import {
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type Ref,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from 'react'
 
 const controlClass =
   'block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm ring-1 ring-slate-300 ring-inset placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 aria-invalid:ring-red-500 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-700'
@@ -42,6 +49,30 @@ export function TextField({ label, error, hint, id, ...props }: TextFieldProps) 
     <FieldShell id={fieldId} label={label} error={error} hint={hint}>
       <input
         id={fieldId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${fieldId}-error` : undefined}
+        className={controlClass}
+        {...props}
+      />
+    </FieldShell>
+  )
+}
+
+type TextareaFieldProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  label: string
+  error?: string
+  hint?: string
+  ref?: Ref<HTMLTextAreaElement>
+}
+
+export function TextareaField({ label, error, hint, id, rows = 3, ...props }: TextareaFieldProps) {
+  const generatedId = useId()
+  const fieldId = id ?? generatedId
+  return (
+    <FieldShell id={fieldId} label={label} error={error} hint={hint}>
+      <textarea
+        id={fieldId}
+        rows={rows}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${fieldId}-error` : undefined}
         className={controlClass}

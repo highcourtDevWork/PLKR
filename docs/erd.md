@@ -294,7 +294,8 @@ Indexes: `(module_id, parent_id, position)`. **Depth is limited to 2** (topic â†
 
 ### resources (SD)
 `user_id` FK (C), `topic_id` FK (C), `type` VARCHAR(32) (link, article, video, book, course, doc), `title` VARCHAR(200), `url` VARCHAR(2048), `description` TEXT NULL, `position` INT.
-Indexes: `(topic_id, position)`, `(user_id)`.
+Indexes: `(topic_id, user_id, position)` (every read is per topic *and* user, since resources are private on shared system topics), `(user_id)`.
+Model class: `LearningResource` (`Resource` clashes with the PHP pseudo-type in docblocks).
 
 ### tags / taggables
 `tags`: `user_id` FK (C), `name` VARCHAR(50), `slug` VARCHAR(60), with **UNIQUE `(user_id, slug)`**.
@@ -383,6 +384,7 @@ Rows are created at attempt start, which freezes the question set and order. `se
 ### user_topic_progress
 `user_id` FK (C), `topic_id` FK (C), `status` VARCHAR(16) (not_started, in_progress, completed), `mastery` DECIMAL(5,2) (0â€“100), `retention` DECIMAL(5,4) NULL, `accuracy` DECIMAL(5,4) NULL, `coverage` DECIMAL(5,4) NULL, `last_studied_at` DATETIME NULL, `completed_at` DATETIME NULL.
 Constraints: **UNIQUE `(user_id, topic_id)`**; index `(user_id, mastery)` for weak topics, `(user_id, last_studied_at)` for recent topics.
+Soft-deleting a topic keeps its progress row (so a restore keeps it), so **every query that lists progress must go through `whereHas('topic')`** (the SoftDeletes scope then hides deleted topics; the services soft-delete all topics under a deleted path or module).
 
 ### study_days (daily rollup, written by `ProgressRecorder`)
 `user_id` FK (C), `date` DATE (user-local), `reviews_count`, `new_items_count`, `questions_answered`, `correct_answers`, `study_seconds`, `notes_created` (INT UNSIGNED, default 0).
